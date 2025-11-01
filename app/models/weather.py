@@ -11,4 +11,4 @@ class WeatherReport(base):
     humidity = Column(Integer)
     wind_speed = Column(Float)
     description = Column(String)
-    # created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
