@@ -2,11 +2,13 @@ from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 from pathlib import Path
 
+
 env_path = Path(__file__).resolve().parents[2] / ".env"
 
 
 class Settings(BaseSettings):
     API_KEY_AI: str
+    MODEL_AI: str
     API_KEY_WEATHER: str
     HOST: str
     DATABASE: str
