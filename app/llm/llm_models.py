@@ -9,25 +9,25 @@ from google import genai
 
 class GeminiLLM(LLM):
 
-
     def __init__(self):
         self.__client = genai.Client(api_key=settings.API_KEY_AI)
 
     async def generate_al_text(self,  city: str = "Обухів", lang: str = "ua"):
 
         data = await WeatherScraper.get_current_weather(city, lang)
-        print(data)
 
         response = self.__client.models.generate_content(
             model=settings.MODEL_AI,
             contents=f"Пристав що ти синоптик і тобі потрібно сформулювати людський опис погоди."
                      f"Наприклад “Сьогодні краще взяти парасольку!”."
                      f"це твої дані на сьогодні {data}."
-                     f"2-4 короткі речення не більше"
+                     f"2-4 короткі речення не більше."
+                     f"І ще мені потрібен тільки один варіант"
         )
-        print(response.text)
+
+        return response.text
 
 
-if __name__ == "__main__":
-    llm = GeminiLLM()
-    asyncio.run(llm.generate())
+# if __name__ == "__main__":
+#     llm = GeminiLLM()
+#     asyncio.run(llm.generate())

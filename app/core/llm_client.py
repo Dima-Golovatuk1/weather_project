@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class LLM(ABC):
     @abstractmethod
-    async def generate(self):
+    async def generate_al_text(self):
         pass
 
 
