@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css"
+        integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/header.css') }}">
+    {% block link %}{% endblock %}
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <a class="header__logo" href="/">Weather<span class="header__logo__span">AI</span></a>
+            <ul class="header__list">
+                <li class="header__item">
+                    <a class="header__item__link" href="">Головна</a>
+                </li>
+                <li class="header__item">
+                    <a class="header__item__link" href="">Погода Сьогодні</a>
+                </li>
+                <li class="header__item">
+                    <a class="header__item__link" href="">Зберегти Погоду</a>
+                </li>
+                <li class="header__item">
+                    <a class="header__item__link" href="">Історія Звітів</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>{% block main %}{% endblock %}</main>
+
+    <footer>{% block footer %}{% endblock %}</footer>
+
+    {% block script %}{% endblock %}
+</body>
+
+</html>

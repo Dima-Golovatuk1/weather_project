@@ -1,6 +1,7 @@
 import httpx
 import asyncio
 from app.core.config import settings
+from datetime import datetime, date, timezone
 
 
 class WeatherScraper:
@@ -22,6 +23,12 @@ class WeatherScraper:
 
         data = response.json()
 
+        timestamp_unix = data["dt"]
+
+        reported_datetime = datetime.fromtimestamp(timestamp_unix, tz=timezone.utc)
+
+        reported_date = reported_datetime.date()
+
         return {
             "city": city,
             "temperature": data["main"]["temp"],
@@ -29,7 +36,8 @@ class WeatherScraper:
             "wind_speed": data["wind"]["speed"],
             "description": data["weather"][0]["description"],
             "main": data["weather"][0]["main"],
-            "pressure": data["main"]["pressure"]
+            "pressure": data["main"]["pressure"],
+            "reported_at": reported_date.strftime('%d.%m.%Y')
         }
 
 

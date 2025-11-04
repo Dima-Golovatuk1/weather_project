@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, Float, DateTime, Date
+from datetime import datetime, timezone
 from app.db.database import base, session
 
 
@@ -12,7 +12,7 @@ class WeatherReport(base):
     humidity = Column(Integer)
     wind_speed = Column(Float)
     description = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    reported_at = Column(Date)
 
     def save(self):
         db = session()
@@ -26,3 +26,4 @@ class WeatherReport(base):
             raise e
         finally:
             db.close()
+

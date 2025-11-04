@@ -2,10 +2,10 @@ import asyncio
 from app.core.llm_client import LLM
 from app.core.config import settings
 from app.scraping.weather_service import WeatherScraper
+from google import genai
+
 
 weather = WeatherScraper
-
-from google import genai
 
 class GeminiLLM(LLM):
 
