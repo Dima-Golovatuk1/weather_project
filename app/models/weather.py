@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Date
-from datetime import datetime, timezone
-from app.db.database import base, session
+from sqlalchemy import Column, Integer, String, Float, Date
+from app.db.database import async_session, Base
+from sqlalchemy.future import select
 
-
-class WeatherReport(base):
+class WeatherReport(Base):
     __tablename__ = "weather_reports"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -14,40 +13,26 @@ class WeatherReport(base):
     description = Column(String)
     reported_at = Column(Date)
 
-    def save(self):
-        db = session()
-        try:
-            db.add(self)
-            db.commit()
-            db.refresh(self)
+    async def save(self):
+        async with async_session() as db:
+            async with db.begin():
+                db.add(self)
+            await db.refresh(self)
             return self
-        except Exception as e:
-            db.rollback()
-            raise e
-        finally:
-            db.close()
 
     @classmethod
-    def get_by_id(cls, report_id: int):
-        db = session()
-        try:
-            return db.query(cls).filter(cls.id == report_id).first()
-        finally:
-            db.close()
+    async def get_by_id(cls, report_id: int):
+        async with async_session() as db:
+            result = await db.execute(select(cls).filter(cls.id == report_id))
+            return result.scalar_one_or_none()
 
     @classmethod
-    def delete_by_id(cls, report_id: int):
-        db = session()
-        try:
-            report = db.query(cls).filter(cls.id == report_id).first()
+    async def delete_by_id(cls, report_id: int):
+        async with async_session() as db:
+            result = await db.execute(select(cls).filter(cls.id == report_id))
+            report = result.scalar_one_or_none()
             if not report:
                 return None
-            db.delete(report)
-            db.commit()
+            await db.delete(report)
+            await db.commit()
             return True
-        except Exception as e:
-            db.rollback()
-            raise e
-        finally:
-            db.close()
-

@@ -2,9 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
-from app.db.database import session
+from app.db.database import async_session
 from app.models.weather import WeatherReport
 from app.llm.llm_models import GeminiLLM
 from app.scraping.weather_service import WeatherScraper
@@ -19,12 +20,9 @@ TEMPLATE_DIR = BASE_DIR / "templates"
 templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 
-def get_db():
-    db = session()
-    try:
+async def get_db() -> AsyncSession:
+    async with async_session() as db:
         yield db
-    finally:
-        db.close()
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -59,10 +57,10 @@ async def post_today_weather(request: Request, city: str = Form(...)):
             "weather_today.html",
             {"request": request, "error": None, "weather": weather_data}
         )
-    except Exception as e:
+    except Exception:
         return templates.TemplateResponse(
             "weather_today.html",
-            {"request": request, "error": f"Не вдалося отримати дані"}
+            {"request": request, "error": "Не вдалося отримати дані"}
         )
 
 
@@ -89,46 +87,42 @@ async def save_weather_report(request: Request, city: str = Form(...)):
             description=ai_text,
             reported_at=data["reported_at"]
         )
-        report.save()
+        await report.save()
+
         message = f"Погода для {city} успішно збережена в базу даних!"
-
         return templates.TemplateResponse(
             "weather_save_today.html",
-            {
-                "request": request,
-                "message": message,
-                "error": None
-            }
+            {"request": request, "message": message, "error": None}
         )
-    except Exception as e:
+    except Exception:
         return templates.TemplateResponse(
             "weather_save_today.html",
-            {"request": request, "error": f"Винекла помилка"}
+            {"request": request, "error": "Виникла помилка"}
         )
-
 
 
 # get_weather_all
 @router.get("/weather/history", response_class=HTMLResponse)
-def get_all_weather(request: Request, db: Session = Depends(get_db)):
+async def get_all_weather(request: Request, db: AsyncSession = Depends(get_db)):
     try:
-        reports = db.query(WeatherReport).order_by(WeatherReport.id.desc()).all()
+        result = await db.execute(select(WeatherReport).order_by(WeatherReport.id.desc()))
+        reports = result.scalars().all()
         return templates.TemplateResponse(
             "weather_all.html",
             {"request": request, "reports": reports}
         )
     except Exception as e:
         return templates.TemplateResponse(
-            "all.html",
+            "weather_all.html",
             {"request": request, "error": f"Помилка при читанні з бази: {e}"}
         )
 
 
-#one_weather
+# one_weather
 @router.get("/weather/{report_id}", response_class=HTMLResponse)
-def get_weather_by_id(request: Request, report_id: int, db: Session = Depends(get_db)):
+async def get_weather_by_id(request: Request, report_id: int):
     try:
-        report = WeatherReport.get_by_id(report_id)
+        report = await WeatherReport.get_by_id(report_id)
         if not report:
             raise HTTPException(status_code=404, detail="Звіт не знайдено")
 
@@ -136,21 +130,17 @@ def get_weather_by_id(request: Request, report_id: int, db: Session = Depends(ge
             "weather_detail.html",
             {"request": request, "report": report}
         )
-    except Exception as e:
+    except Exception:
         return templates.TemplateResponse(
-           "templates_detail.html",
+            "weather_detail.html",
             {"request": request, "error": "Сталася помилка"}
         )
 
 
 @router.post("/weather/delete/{report_id}", name="delete_weather")
-def delete_weather(report_id: int):
-    result = WeatherReport.delete_by_id(report_id)
-
+async def delete_weather(report_id: int):
+    result = await WeatherReport.delete_by_id(report_id)
     if not result:
         raise HTTPException(status_code=404, detail="Запис не знайдено")
 
     return RedirectResponse(url="/weather/history", status_code=303)
-
-
-

@@ -2,13 +2,14 @@ from fastapi import FastAPI
 import uvicorn
 from contextlib import asynccontextmanager
 from app.api.routes_weather import router
-from app.db.database import base, engine
+from app.db.database import Base, engine
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    base.metadata.create_all(bind=engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
 
 app = FastAPI(title="Weather AI", lifespan=lifespan)
