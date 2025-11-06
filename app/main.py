@@ -8,11 +8,8 @@ from pathlib import Path
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Перевіряємо структуру бази даних...")
     base.metadata.create_all(bind=engine)
-    print("Таблиці створено або вже існують")
     yield
-    print("Завершення роботи програми...")
 
 app = FastAPI(title="Weather AI", lifespan=lifespan)
 

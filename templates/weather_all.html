@@ -38,7 +38,7 @@
                             {{ report.reported_at.strftime('%d.%m.%Y') }}
                         </td>
                         <td class="report-table__data-cell report-table__data-cell--city" data-label="Місто">
-                            <a href="#" class="report-table__link">{{ report.city }}</a>
+                            <a href="/weather/{{ report.id }}" class="report-table__link">{{ report.city }}</a>
                         </td>
                         <td class="report-table__data-cell report-table__data-cell--temp" data-label="Температура">{{ report.temperature | round(2) }} °C</td>
                         <td class="report-table__data-cell report-table__data-cell--humidity" data-label="Вологість">{{ report.humidity }} %</td>

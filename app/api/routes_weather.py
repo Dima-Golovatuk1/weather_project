@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 from sqlalchemy.orm import Session
@@ -122,4 +122,35 @@ def get_all_weather(request: Request, db: Session = Depends(get_db)):
             "all.html",
             {"request": request, "error": f"Помилка при читанні з бази: {e}"}
         )
+
+
+#one_weather
+@router.get("/weather/{report_id}", response_class=HTMLResponse)
+def get_weather_by_id(request: Request, report_id: int, db: Session = Depends(get_db)):
+    try:
+        report = WeatherReport.get_by_id(report_id)
+        if not report:
+            raise HTTPException(status_code=404, detail="Звіт не знайдено")
+
+        return templates.TemplateResponse(
+            "weather_detail.html",
+            {"request": request, "report": report}
+        )
+    except Exception as e:
+        return templates.TemplateResponse(
+           "templates_detail.html",
+            {"request": request, "error": "Сталася помилка"}
+        )
+
+
+@router.post("/weather/delete/{report_id}", name="delete_weather")
+def delete_weather(report_id: int):
+    result = WeatherReport.delete_by_id(report_id)
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Запис не знайдено")
+
+    return RedirectResponse(url="/weather/history", status_code=303)
+
+
 

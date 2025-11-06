@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Погода Сьогодні - Weather AI{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/weather_detail.css') }}">
+{% endblock %}
+
+{% block main %}
+<section class="weather-today">
+    <div class="container">
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% else %}
+        <div class="weather-report-card">
+            <h2 class="weather-today__title">Деталі погоди для {{ report.city }}</h2>
+            <form action="{{ url_for('delete_weather', report_id=report.id) }}" method="post"
+                onsubmit="return confirm('Ви впевнені, що хочете видалити цей запис?')">
+                <button type="submit" class="delete-btn">Видалити запис</button>
+            </form>
+            <ul class="weather-today__list">
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">ID:</h3>
+                    <p class="weather-today__item__text">{{ report.id }}</p>
+                </li>
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">Температура:</h3>
+                    <p class="weather-today__item__text">{{ report.temperature }} °C</p>
+                </li>
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">Вологість:</h3>
+                    <p class="weather-today__item__text">{{ report.humidity }}%</p>
+                </li>
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">Швидкість вітру:</h3>
+                    <p class="weather-today__item__text">{{ report.wind_speed }} м/с</p>
+                </li>
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">Опис:</h3>
+                    <p class="weather-today__item__text">{{ report.description }}</p>
+                </li>
+                <li class="weather-today__item">
+                    <h3 class="weather-today__item__title">Дата:</h3>
+                    <p class="weather-today__item__text">{{ report.reported_at }}</p>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -27,3 +27,27 @@ class WeatherReport(base):
         finally:
             db.close()
 
+    @classmethod
+    def get_by_id(cls, report_id: int):
+        db = session()
+        try:
+            return db.query(cls).filter(cls.id == report_id).first()
+        finally:
+            db.close()
+
+    @classmethod
+    def delete_by_id(cls, report_id: int):
+        db = session()
+        try:
+            report = db.query(cls).filter(cls.id == report_id).first()
+            if not report:
+                return None
+            db.delete(report)
+            db.commit()
+            return True
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            db.close()
+
