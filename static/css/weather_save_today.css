@@ -1,0 +1,108 @@
+.save-weather {
+    padding: 40px 0;
+}
+
+.save-weather .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+.alert-error{
+    text-align: center;
+    color: rgb(255, 0, 0);
+    margin-bottom: 10px;
+}
+
+
+.alert-success{
+    text-align: center;
+    color: rgb(0, 190, 29);
+    margin-bottom: 10px;
+}
+
+
+.save-weather__title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+
+.save-weather__card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 40px;
+    max-width: 600px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.save-weather__card__text {
+    color: #555;
+    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+
+.save-weather__card__form {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+
+.save-weather__card__form__input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+
+.save-weather__card__form__input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+
+.save-weather__card__form__btn {
+    padding: 12px 25px;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    background-color: #23af28;
+    color: white;
+}
+
+
+.save-weather__card__form__btn:hover {
+    background-color: #2a9930;
+}
+
+
+@media (max-width: 640px) {
+    .save-weather__card__form {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .save-weather__card__form__input,
+    .save-weather__card__form__btn {
+        width: 100%;
+    }
+}

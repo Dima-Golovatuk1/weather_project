@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Зберегти Погоду - Weather AI{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', path='css/weather_save_today.css') }}">{% endblock %}
+
+{% block main %}
+<section class="save-weather">
+    <div class="container">
+        <h2 class="save-weather__title">Зберегти Поточний Звіт у БД</h2>
+
+        {% if error %}
+        <div class="alert alert-error" role="alert">
+            <strong class="alert-strong">Помилка збереження:</strong>
+            <span class="alert-text">{{ error }}</span>
+        </div>
+        {% elif message %}
+        <div class="alert alert-success" role="alert">
+            <strong class="alert-strong">Успіх!</strong>
+            <span class="alert-text">{{ message }}</span>
+        </div>
+        {% endif %}
+
+        <div class="save-weather__card">
+            <p class="save-weather__card__text">Введіть місто. Система автоматично отримає поточну погоду та AI-опис і
+                збереже ці дані в базу даних</p>
+            <form class="save-weather__card__form" method="POST" action="{{ url_for('save_weather_report') }}">
+                <input class="save-weather__card__form__input" name="city" type="text" placeholder="Введіть назву міста для збереження" required>
+                <button class="save-weather__card__form__btn">Отримати та зберегти</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

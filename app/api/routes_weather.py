@@ -29,7 +29,7 @@ def get_db():
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("base.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 # weather_today
@@ -42,7 +42,7 @@ async def weather_today_form(request: Request, error: str = None, weather_data: 
 
 
 @router.post("/weather/today", response_class=HTMLResponse)
-async def post_today_weather(request: Request, city: str = "Обухів"):
+async def post_today_weather(request: Request, city: str = Form(...)):
     try:
         data = await weather_service.get_current_weather(city=city)
         ai_text = await llm_service.generate_al_text(city=city)

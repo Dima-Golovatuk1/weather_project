@@ -1,13 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
+{% block title %}Головна - Weather AI{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', path='css/index.css') }}">{% endblock %}
 
-<body>
+{% block main %}
+<section class="hero">
+    <div class="container">
+        <h1 class="hero__title">Weather AI</h1>
+        <p class="hero__text">Ваш інтелектуальний помічник для отримання та аналізу погодних даних. Ми використовуємо сучасні технології веб-скрапінгу та великі мовні моделі (LLM) для надання детальних та зрозумілих прогнозів.</p>
+        <div class="hero__div">
+            <button class="hero__div__btn hero__div__btn-first">
+                <a class="hero__div__btn__link" href="{{ url_for('weather_today_form') }}">Почати Прогноз</a>
+            </button>
+            <button class="hero__div__btn hero__div__btn-second">
+                <a class="hero__div__btn__link" href="{{ url_for('get_all_weather') }}">Переглянути Історію</a>
+            </button>
+        </div>
+        <ul class="hero__list">
+            <li class="hero__item">
+                <h2 class="hero__item__title">Миттєва Погода</h2>
+                <p class="hero__item__text">Отримайте актуальні дані про температуру, вологість та швидкість вітру для будь-якого міста.</p>
+            </li>
+                        <li class="hero__item">
+                <h2 class="hero__item__title">AI Аналіз</h2>
+                <p class="hero__item__text">Кожен звіт супроводжується інтелектуальним описом, згенерованим Gemini LLM.</p>
+            </li>
+                        <li class="hero__item">
+                <h2 class="hero__item__title">Збереження Звітів</h2>
+                <p class="hero__item__text">Зберігайте важливі звіти в базу даних для подальшого аналізу та порівняння.</p>
+            </li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
 
-</body>
-
-</html>
+{% block script %}{% endblock %}

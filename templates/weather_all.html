@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Історія Звітів - Weather AI{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', path='css/weather_all.css') }}">{% endblock %}
+
+{% block main %}
+<section class="history">
+    <div class="container">
+        <h1 class="history__title">Історія Збережених Погодних Звітів</h1>
+
+        {% if error %}
+        <div class="alert alert--error" role="alert">
+            <strong class="alert__strong">Помилка:</strong>
+            <span class="alert__text">{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if reports %}
+        <div class="report-table-wrapper">
+            <table class="report-table">
+                <thead class="report-table__head">
+                    <tr class="report-table__row report-table__row--header">
+                        <th class="report-table__header-cell report-table__header-cell--id">ID</th>
+                        <th class="report-table__header-cell report-table__header-cell--date">ДАТА ЗВІТУ</th>
+                        <th class="report-table__header-cell report-table__header-cell--city">МІСТО</th>
+                        <th class="report-table__header-cell report-table__header-cell--temp">ТЕМП.</th>
+                        <th class="report-table__header-cell report-table__header-cell--humidity">ВОЛОГІСТЬ</th>
+                        <th class="report-table__header-cell report-table__header-cell--wind">ВІТЕР (М/С)</th>
+                        <th class="report-table__header-cell report-table__header-cell--description">ОПИС AI</th>
+                    </tr>
+                </thead>
+
+                <tbody class="report-table__body">
+                    {% for report in reports %}
+                    <tr class="report-table__row">
+                        <td class="report-table__data-cell report-table__data-cell--id" data-label="ID">{{ report.id }}</td>
+                        <td class="report-table__data-cell report-table__data-cell--date" data-label="Дата Звіту">
+                            {{ report.reported_at.strftime('%d.%m.%Y') }}
+                        </td>
+                        <td class="report-table__data-cell report-table__data-cell--city" data-label="Місто">
+                            <a href="#" class="report-table__link">{{ report.city }}</a>
+                        </td>
+                        <td class="report-table__data-cell report-table__data-cell--temp" data-label="Температура">{{ report.temperature | round(2) }} °C</td>
+                        <td class="report-table__data-cell report-table__data-cell--humidity" data-label="Вологість">{{ report.humidity }} %</td>
+                        <td class="report-table__data-cell report-table__data-cell--wind" data-label="Вітер">{{ report.wind_speed | round(2) }} м/с</td>
+                        <td class="report-table__data-cell report-table__data-cell--description" data-label="Опис AI">{{ report.description | truncate(100) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="history__empty-state">
+            <p class="history__empty-text">На жаль, у базі даних поки немає збережених погодних звітів.</p>
+            <a href="{{ url_for('weather_save_form') }}" class="button button--primary">Зберегти перший звіт</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

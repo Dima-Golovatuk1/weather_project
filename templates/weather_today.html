@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Погода Сьогодні - Weather AI{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', path='css/weather_today.css') }}">{% endblock %}
+
+{% block main %}
+<section class="weather-today">
+    <div class="container">
+        <h2 class="weather-today__title">Прогноз Погоди на Сьогодні</h2>
+        {% if error %}
+        <div class="alert alert-error">
+            <strong class="alert-strong">Помилка:</strong>
+            <span class="alert-text">{{ error }}</span>
+        </div>
+        {% endif %}
+        <div class="form-card">
+            <form method="POST" action="{{ url_for('post_today_weather') }}" class="weather-today__form">
+                <input type="text" name="city" placeholder="Введіть назву міста (наприклад, Київ)" required
+                    class="weather-today__form__input">
+                <button class="weather-today__form__btn" type="submit">Показати Прогноз</button>
+            </form>
+        </div>
+        {% if weather %}
+        <div class="weather-report-card">
+            <h2 class="report-card__title">{{ weather.city }}</h2>
+            <ul class="report-card__list">
+                <li class="report-cart__item">
+                    <p class="report-cart__item__text-lable">Температура</p>
+                    <p class="report-cart__item__text-value">{{ "%.2f" | format(weather.temperature | float) }} °C</p>
+                </li>
+                <li class="report-cart__item">
+                    <p class="report-cart__item__text-lable">Вологість</p>
+                    <p class="report-cart__item__text-value">{{ weather.humidity }} %</p>
+                </li>
+                <li class="report-cart__item">
+                    <p class="report-cart__item__text-lable">Швидкість вітру</p>
+                    <p class="report-cart__item__text-value">{{ "%.2f" | format(weather.wind_speed | float) }} м/с</p>
+                </li>
+            </ul>
+            <h3 class="report-card__subtitle">AI Аналіз:</h3>
+            <p class="report-card__text">{{ weather.description | default("Опис не надано.") }}</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
